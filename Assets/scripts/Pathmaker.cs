@@ -1,6 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography.X509Certificates;
+//using UnityEditor.Experimental.UIElements.GraphView;
 using UnityEngine;
+using UnityEngine.Experimental.Rendering;
+using UnityEngine.SceneManagement;
 
 // MAZE PROC GEN LAB
 // all students: complete steps 1-6, as listed in this file
@@ -16,22 +20,80 @@ public class Pathmaker : MonoBehaviour {
 
 //	DECLARE CLASS MEMBER VARIABLES:
 //	Declare a private integer called counter that starts at 0; 		// counter var will track how many floor tiles I've instantiated
+	public int counter = 0; 
 //	Declare a public Transform called floorPrefab, assign the prefab in inspector;
+	public Transform [] floorPrefab;
 //	Declare a public Transform called pathmakerSpherePrefab, assign the prefab in inspector; 		// you'll have to make a "pathmakerSphere" prefab later
+	public Transform pathMakerSpherePrefab;
 
+	public static int GlobalTileCount = 0;
+
+	
+	
+
+	private void Start()
+	{
+		
+
+		GlobalTileCount = 0;
+
+
+	}
+	
 
 	void Update () {
 //		If counter is less than 50, then:
+		float n2 = Random.Range(0.7f, 0.85f);
+		
+		if (counter < 50 && GlobalTileCount < 50)
+		{
+
+			Vector3 spawnPos = transform.position;
+ 
 //			Generate a random number from 0.0f to 1.0f;
+			float n = Random.Range(0.0f, 1.0f);
 //			If random number is less than 0.25f, then rotate myself 90 degrees;
+			if (n < 0.05f)
+			{
+				transform.eulerAngles += new Vector3(0,Random.Range(45,90),0);
+			}
 //				... Else if number is 0.25f-0.5f, then rotate myself -90 degrees;
+			else if (n > n2 && n < 0.9f)
+			{
+				transform.eulerAngles += new Vector3(0,Random.Range(-90,-45),0);
+			}
+			
 //				... Else if number is 0.99f-1.0f, then instantiate a pathmakerSpherePrefab clone at my current position;
+			else if (n > 0.8f && n < 1.0f)
+			{
+				Instantiate(pathMakerSpherePrefab, spawnPos, Quaternion.Euler(0f,0f,0f));
+			}
+			
+			
 //			// end elseIf
 
 //			Instantiate a floorPrefab clone at current position;
+			
+			int randomIndex =
+				Random.Range(0, floorPrefab.Length); 
+			Instantiate(floorPrefab[randomIndex], spawnPos, Quaternion.Euler(0f,0f,0f));
+			GlobalTileCount += 1;
+			
+			
 //			Move forward ("forward", as in, the direction I'm currently facing) by 5 units;
+			transform.Translate(0,0,5);
 //			Increment counter;
+			counter += 1; 
+		}
+
 //		Else:
+	else
+		{
+			Destroy(this.gameObject);
+		}
+	
+
+		
 //			Destroy my game object; 		// self destruct if I've made enough tiles already
 	}
 
